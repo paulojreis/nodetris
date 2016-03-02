@@ -1,0 +1,16 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paulo Jorge Reis",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "cli-clear": "^1.0.4",
+    "prompt": "^1.0.0"
+  }
+}
