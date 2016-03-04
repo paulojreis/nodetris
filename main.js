@@ -59,15 +59,15 @@ function drawBoard () {
         boardWidth  = boardModel[0].length;
 
     for (var y = 0; y < boardHeight; y++) {
-        boardView += chalk.white('*');
+        boardView += chalk.white('█');
         for (var x = 0; x < boardWidth; x++) {
-            boardView += boardModel[y][x] ? chalk.cyan('*') :' ';
+            boardView += boardModel[y][x] ? chalk.cyan('█') :' ';
         }
-        boardView += chalk.white('*\n');
+        boardView += chalk.white('█\n');
     }
 
     for (var x = 0; x < boardWidth + 2; x++) { 
-        boardView += chalk.white('*');
+        boardView += chalk.white('█');
     }
 
     clear();
