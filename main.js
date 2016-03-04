@@ -1,33 +1,62 @@
-var prompt      = require('prompt'),
-    clear       = require('cli-clear'),
+var clear       = require('cli-clear'),
     chalk       = require('chalk'),
+    keypress    = require('keypress'),
     tetrisGame  = require('./lib/tetris-game.js'),
-    movePromptDefs = {
-        name        : 'move',
-        description : 'Enter your move (w, a, s, d) and return ...',
-        type        : 'string'
-    };
+    updateInterval;
 
-prompt.message = 'Tetris: ';
-prompt.delimiter = '';
-prompt.start();
+// make `process.stdin` begin emitting "keypress" events
+keypress(process.stdin);
+
+// listen for the "keypress" event
+process.stdin.on('keypress', handleKeypress);
+
+process.stdin.setRawMode(true);
+process.stdin.resume();
+
+updateInterval = setInterval(update, 1000);
+
 tetrisGame.start();
-
 drawBoard();
 
-prompt.get(movePromptDefs, handleMove);
+function update () {
+    tetrisGame.tryMove(tetrisGame.Moves.MoveDown);
+    drawBoard();
+}
 
-function handleMove (err, result) { 
-    if (/^[wasdWASD]$/.test(result.move)) {
-        tetrisGame.tryMove(result.move);
+function handleKeypress (char, key) { 
+    var move;
+
+    if (key && key.ctrl && key.name == 'c') {
+        process.exit(1);
+    }
+    
+    switch (key.name) {
+        case 'left':
+            move = tetrisGame.Moves.MoveLeft;
+            break;
+        case 'right':
+            move = tetrisGame.Moves.MoveRight;
+            break;
+        case 'up':
+            move = tetrisGame.Moves.RotCounter;
+            break;
+        case 'down':
+            move = tetrisGame.Moves.RotClock;
+            break;
+        case 'space':
+            move = tetrisGame.Moves.MoveDown;
+            break;
     }
 
-    drawBoard();
+    if (move) {
+        tetrisGame.tryMove(move);
+    }
 
     if (tetrisGame.getState() === tetrisGame.States.PLAYING) {
-        prompt.get(movePromptDefs, handleMove);
+        // TODO Draw in update cycle, not in every keypress.
+        drawBoard();
     } else {
-        process.exit(1)
+        process.exit(1);
     }
 }
 
