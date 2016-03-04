@@ -2,7 +2,7 @@ var clear       = require('cli-clear'),
     chalk       = require('chalk'),
     keypress    = require('keypress'),
     tetrisGame  = require('./lib/tetris-game.js'),
-    updateInterval;
+    refreshInterval;
 
 // make `process.stdin` begin emitting "keypress" events
 keypress(process.stdin);
@@ -13,15 +13,10 @@ process.stdin.on('keypress', handleKeypress);
 process.stdin.setRawMode(true);
 process.stdin.resume();
 
-updateInterval = setInterval(update, 1000);
-
-tetrisGame.start();
+tetrisGame.start(250);
 drawBoard();
 
-function update () {
-    tetrisGame.tryMove(tetrisGame.Moves.MoveDown);
-    drawBoard();
-}
+refreshInterval = setInterval(drawBoard, 1000 / 60);
 
 function handleKeypress (char, key) { 
     var move;
@@ -52,10 +47,7 @@ function handleKeypress (char, key) {
         tetrisGame.tryMove(move);
     }
 
-    if (tetrisGame.getState() === tetrisGame.States.PLAYING) {
-        // TODO Draw in update cycle, not in every keypress.
-        drawBoard();
-    } else {
+    if (tetrisGame.getState() === tetrisGame.States.OVER) {
         process.exit(1);
     }
 }
